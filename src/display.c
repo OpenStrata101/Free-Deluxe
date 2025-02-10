@@ -51,6 +51,34 @@ void draw_memory_bar(double percentage, int width, const char* color) {
     printf("] %.1f%%%s", percentage, COLOR_RESET);
 }
 
+void display_memory(MemoryInfo *info, ProgramOptions *opts) {
+    char total[20], used[20], free[20], available[20], cached[20], swap_total[20], swap_used[20];
+    
+    format_size(info->total, total, opts);
+    format_size(info->used, used, opts);
+    format_size(info->free, free, opts);
+    format_size(info->available, available, opts);
+    format_size(info->cached, cached, opts);
+    format_size(info->swap_total, swap_total, opts);
+    format_size(info->swap_used, swap_used, opts);
+    
+    // Simple display format
+    printf("\nMemory Statistics:\n");
+    printf("----------------\n");
+    printf("Total Memory:     %s\n", total);
+    printf("Used Memory:      %s\n", used);
+    printf("Free Memory:      %s\n", free);
+    printf("Available Memory: %s\n", available);
+    printf("Cached Memory:    %s\n", cached);
+    
+    if (info->swap_total > 0) {
+        printf("\nSwap Usage:\n");
+        printf("-----------\n");
+        printf("Swap Total:    %s\n", swap_total);
+        printf("Swap Used:     %s\n", swap_used);
+    }
+}
+
 void display_memory_deluxe(MemoryInfo *info, ProgramOptions *opts) {
     static int frame = 0;
     char formatted[10][20];
@@ -103,7 +131,6 @@ void display_memory_deluxe(MemoryInfo *info, ProgramOptions *opts) {
     printf("\n");
 }
 
-// Add a loading animation
 void show_loading_animation() {
     const char* frames[] = {
         "⠋ Installing", "⠙ Installing", "⠹ Installing",
