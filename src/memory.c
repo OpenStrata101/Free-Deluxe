@@ -5,20 +5,25 @@
 #include <sys/sysinfo.h>
 #include "memory.h"
 
-unsigned long get_cached_memory() {
-    FILE *fp;
-    char line[256];
-    unsigned long cached = 0;
+#define MEMINFO_PATH "/proc/meminfo"
+#define LINE_BUFFER_SIZE 256
+#define KB_TO_BYTES 1024
 
-    fp = fopen("/proc/meminfo", "r");
+unsigned long get_cached_memory() {
+    FILE *fp = fopen(MEMINFO_PATH, "r");
     if (fp == NULL) {
+        perror("Failed to open /proc/meminfo");
         return 0;
     }
 
+    char line[LINE_BUFFER_SIZE];
+    unsigned long cached = 0;
+
     while (fgets(line, sizeof(line), fp)) {
         if (strncmp(line, "Cached:", 7) == 0) {
-            sscanf(line, "Cached: %lu", &cached);
-            cached *= 1024; // Convert from KB to bytes
+            if (sscanf(line, "Cached: %lu", &cached) == 1) {
+                cached *= KB_TO_BYTES; // Convert from KB to bytes
+            }
             break;
         }
     }
@@ -29,24 +34,24 @@ unsigned long get_cached_memory() {
 
 MemoryInfo get_memory_info(void) {
     struct sysinfo si;
-    MemoryInfo info = {0};
-
     if (sysinfo(&si) != 0) {
         perror("sysinfo");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
-    info.cached = get_cached_memory();
-    info.total = si.totalram;
-    info.free = si.freeram;
-    info.shared = si.sharedram;
-    info.buffers = si.bufferram;
+    MemoryInfo info = {
+        .total = si.totalram,
+        .free = si.freeram,
+        .shared = si.sharedram,
+        .buffers = si.bufferram,
+        .cached = get_cached_memory(),
+        .swap_total = si.totalswap,
+        .swap_free = si.freeswap
+    };
+
     info.used = info.total - info.free - info.buffers - info.cached;
     info.available = info.free + info.buffers + info.cached;
-    
-    info.swap_total = si.totalswap;
-    info.swap_free = si.freeswap;
-    info.swap_used = si.totalswap - si.freeswap;
+    info.swap_used = info.swap_total - info.swap_free;
 
     return info;
 }
