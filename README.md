@@ -34,3 +34,21 @@ cd Free-Deluxe
 make
 ```
 
+## Usage
+To use Free-Deluxe, simply run the following command in your terminal:
+```
+./freed -d
+```
+
+## Contributing
+Contributions are welcome! To contribute to Free-Deluxe, follow these steps:
+
+1.Fork the repository.
+2.Create a new branch for your feature or bug fix.
+3.Make your changes and commit them.
+4.Push your changes to your fork.
+5.Submit a pull request.
+6.Please ensure your code follows the existing style and includes appropriate tests.
+
+## License
+Free-Deluxe is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
