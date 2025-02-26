@@ -1,6 +1,7 @@
-// include/args.h
 #ifndef ARGS_H
 #define ARGS_H
+
+#include "common.h"
 
 typedef struct {
     int display_mode;    // 0: normal, 1: deluxe
@@ -17,4 +18,4 @@ ProgramOptions parse_args(int argc, char **argv);
 void show_help(void);
 void show_version(void);
 
-#endif
+#endif /* ARGS_H */

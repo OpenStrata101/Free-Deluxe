@@ -1,4 +1,3 @@
-// src/args.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,8 +5,9 @@
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
-#include "args.h"
-#include "utils.h"
+#include "../include/args.h"
+#include "../include/common.h"
+#include "../include/utils.h"
 
 #define MAX_SECONDS 3600
 #define MAX_COUNT 1000
@@ -76,7 +76,7 @@ static int check_exclusive_options(ProgramOptions *opts) {
     unit_count += (opts->unit == 3); // mega
     unit_count += (opts->unit == 4); // giga
     unit_count += (opts->unit == 5); // tera
-    unit_count += (opts->unit == 0); // human
+    unit_count += (opts->unit == 0 && opts->unit != 0); // human (auto)
     
     if (unit_count > 1) {
         fprintf(stderr, "Error: Only one unit option (-b, -k, -m, -g, -t, -h) can be specified\n");
@@ -175,9 +175,9 @@ void show_help(void) {
     printf("  -d, --deluxe        show deluxe output with icons\n");
     printf("  -S, --si            use powers of 1000 not 1024\n");
     printf("  -s N, --seconds N   repeat printing every N seconds (0-%d)\n", MAX_SECONDS);
-    printf("  -c N, --count N     repeat printing N times (0-%d)\n", MAX_COUNT);
+    printf("  -c N, --count N     repeat printing N times (0-%d, 0=infinite)\n", MAX_COUNT);
     printf("  -w, --wide          use wide output format\n");
-    printf("      --help          display this help and exit\n");
+    printf("  -H, --help          display this help and exit\n");
     printf("  -V, --version       output version information and exit\n");
     printf("\n");
     printf("Examples:\n");
@@ -188,6 +188,6 @@ void show_help(void) {
 
 void show_version(void) {
     printf("%s version %s\n", PROGRAM_NAME, VERSION);
-    printf("Copyright (C) 2024 Your Name\n");
-    printf("License GPLv3+: GNU GPL version 3 or later\n");
+    printf("Copyright (C) 2025 intrepidDev101\n");
+    printf("License MIT\n");
 }

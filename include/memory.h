@@ -1,4 +1,3 @@
-// include/memory.h
 #ifndef MEMORY_H
 #define MEMORY_H
 
@@ -17,4 +16,4 @@ typedef struct {
 
 MemoryInfo get_memory_info(void);
 
-#endif
+#endif /* MEMORY_H */

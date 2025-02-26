@@ -1,20 +1,19 @@
-// src/main.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
 #include <string.h>
-#include "args.h"
-#include "memory.h"
-#include "display.h"
-#include "utils.h"
+#include "../include/args.h"
+#include "../include/memory.h"
+#include "../include/display.h"
+#include "../include/utils.h"
+#include "../include/common.h"
 
 #define DELUXE_MODE 1
 #define DEFAULT_UPDATE_INTERVAL 1
 #define MAX_UPDATE_INTERVAL 3600
 #define MAX_REPEAT_COUNT 1000
-#define SHOW_CURSOR "\033[?25h"  // Added this definition
 
 // Global flag for signal handling
 static volatile sig_atomic_t keep_running = 1;
@@ -103,18 +102,20 @@ static void display_loop(ProgramOptions *opts) {
             display_memory(&info, opts);
         }
 
-        // Handle update interval
-        if (opts->repeat_seconds > 0) {
-            // Use sleep() for longer intervals, usleep() for sub-second precision
-            if (opts->repeat_seconds >= 1) {
-                sleep(opts->repeat_seconds);
-            } else {
-                usleep(opts->repeat_seconds * 1000000);
-            }
-            count++;
-        } else {
+        // If this is not a repeat or it's the last iteration, break
+        if (opts->repeat_seconds <= 0 || 
+           (opts->repeat_count > 0 && count >= opts->repeat_count - 1)) {
             break;
         }
+
+        // Sleep for the specified interval
+        if (opts->repeat_seconds >= 1) {
+            sleep(opts->repeat_seconds);
+        } else {
+            usleep(opts->repeat_seconds * 1000000);
+        }
+        
+        count++;
         
         // Check for errors after each iteration
         if (ferror(stdout)) {

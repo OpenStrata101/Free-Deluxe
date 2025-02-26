@@ -6,7 +6,7 @@
 
 void display_memory(MemoryInfo *info, ProgramOptions *opts);
 void display_memory_deluxe(MemoryInfo *info, ProgramOptions *opts);
-void format_size(unsigned long bytes, char *result, ProgramOptions *opts);
-void show_loading_animation(void);  // Added this declaration
+// Remove the declaration of format_size from here
+void show_loading_animation(void);
 
-#endif
+#endif /* DISPLAY_H */
